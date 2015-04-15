@@ -5,6 +5,7 @@ This plugin provides the function to 'like' annotation to annotation
 
 support version:  Elgg 1.8
 
+MIT License.
 
 Installation
 ----------------
@@ -21,5 +22,4 @@ Edit mod/groups/views/default/annotation/group_topic_post.php
 And add follow the line: 
 
     <?php echo elgg_view('annotation/like', array('annotation' => $vars['annotation'])) ?>
-
 
