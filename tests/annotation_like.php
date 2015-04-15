@@ -42,6 +42,7 @@ class AnnotationLikeUnitTest extends ElggCoreUnitTest {
 
     
     $user2 = new ElggUser();
+    $user2->username = 'AL' . uniqid();
     $user2->save();
     $al->like($user2->guid);
     // assert 2 like
