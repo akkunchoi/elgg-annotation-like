@@ -1,5 +1,6 @@
 <?php
 $al = new AnnotationLike(get_input('id'));
+
 if (!$al->isValid()){
   register_error(elgg_echo('annotations:notfound'));
   forward(REFERER);
@@ -14,7 +15,7 @@ if (!$userid){
 if ($al->like($userid)){
   system_message(elgg_echo('annotations:like:success'));
 }else{
-  system_message(elgg_echo('annotations:error'));
+  register_error(elgg_echo('annotations:error'));
 }
 
 forward($al->getAnnotation()->getEntity()->getURL());

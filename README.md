@@ -3,24 +3,23 @@ Elgg Annotation Like plugin
 
 This plugin provides the function to 'like' annotation to annotation
 
-support version:  Elgg 1.7
+support version:  Elgg 1.8
 
 
 Installation
 ----------------
 
-1. Copy annotation_like to mod 
+1. Copy annotation_like to mod directory
 2. Enable annotation_like plugin
-3. Render annotation/like view
-
+3. Render "annotation/like" through elgg_view in any target annotation.
 
 Example Usage
 ----------------
 
-Edit groups/views/default/forum/topicpost.php
+Edit mod/groups/views/default/annotation/group_topic_post.php
 
-And add follow line
+And add follow the line: 
 
-    <?php echo elgg_view('annotation/like', array('entity' => $vars['entity'])) ?>
+    <?php echo elgg_view('annotation/like', array('annotation' => $vars['annotation'])) ?>
 
 

@@ -7,19 +7,20 @@ define('ANNOTATION_LIKE_XHR', 1);
 function annotation_like_init(){
   if (ANNOTATION_LIKE_XHR){
     elgg_extend_view("js/initialise_elgg", "annotation/javascript");
-    register_plugin_hook('forward', 'system', 'annotation_like_xhr_forwarder');
+    // for elgg1.7
+//    elgg_register_plugin_hook_handler('forward', 'system', 'annotation_like_xhr_forwarder');
   }
   
   if (is_plugin_enabled('groups') && is_plugin_enabled('notifications')){
     // Group forum notify any annotation on create.
     // If you set annotation_like on group forum and enable notification plugin,
     // you should control notification.
-    register_plugin_hook('object:notifications','object','annotation_like_notification_intercept');
+    elgg_register_plugin_hook_handler('object:notifications','object','annotation_like_notification_intercept');
     
   }
   // TODO like notification
   // register_elgg_event_handler('create', 'annotation', 'annotation_like_create_handler');
-  register_plugin_hook('unit_test', 'system', 'annotation_like_unittest');
+  elgg_register_plugin_hook_handler('unit_test', 'system', 'annotation_like_unittest');
 }
 
 function annotation_like_xhr_forwarder($hook, $entity_type, $returnvalue, $params){
@@ -244,9 +245,9 @@ function annotation_like_get_annotations($params = array()){
   return get_data($query, "row_to_elggannotation");
 }
 
-register_elgg_event_handler('init','system','annotation_like_init');
+elgg_register_event_handler('init','system','annotation_like_init');
 
 global $CONFIG;
 
-register_action("annotation_like/like",false,$CONFIG->pluginspath . "annotation_like/actions/like.php");
-register_action("annotation_like/cancel",false,$CONFIG->pluginspath . "annotation_like/actions/cancel_like.php");
+elgg_register_action("annotation_like/like", dirname(__FILE__) . "/actions/like.php");
+elgg_register_action("annotation_like/cancel", dirname(__FILE__) . "/actions/cancel_like.php");

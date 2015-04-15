@@ -1,9 +1,9 @@
 <?php
-$al = new AnnotationLike($vars['entity']->id);
+$al = new AnnotationLike($vars['annotation']->id);
 if (!$al->isValid()){
   return '';
 }
-$targetId = $vars['entity']->id;
+$targetId = $vars['annotation']->id;
 ?>
 <p class="annotation-like">
   <?php if ($al->liked(get_loggedin_userid())){ ?>

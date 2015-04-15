@@ -4,6 +4,7 @@ class AnnotationLike{
    * annotation key 
    */
   const KEY = 'annotation_like';
+  const QUERY_LIMIT = 100000;
   /**
    *
    * @var ElggAnnotation
@@ -58,7 +59,7 @@ class AnnotationLike{
     if (is_object($userid)){
       $userid = $userid->guid;
     }
-    
+
     $entity = $this->annotation->getEntity();
     
     if ($this->liked($userid)){
@@ -67,7 +68,6 @@ class AnnotationLike{
     
     self::$changed = true;
     $result = $entity->annotate(self::KEY, $this->annotation->id, $this->annotation->access_id, $userid, 'integer');
-    
     if ($result){
       trigger_plugin_hook('annotation_like:changed', 'all', array('entity' => $entity, 'annotation' => $this->annotation, 'method' => 'like'), null);
     }
@@ -142,7 +142,7 @@ class AnnotationLike{
         'name' => self::KEY, 
         'value' => $annotation->id, 
         'value_type' => 'integer',
-        'limit' => 10000
+        'limit' => self::QUERY_LIMIT
     ));
     if ($an){
       return count($an);
@@ -164,7 +164,7 @@ class AnnotationLike{
         'name' => self::KEY,
         'value' => $annotation->id,
         'value_type' => 'integer',
-        'limit' => 10000
+        'limit' => self::QUERY_LIMIT
     ));
     $count = 0;
     foreach ($an as $a){

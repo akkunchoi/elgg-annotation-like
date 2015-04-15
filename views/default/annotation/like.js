@@ -9,9 +9,12 @@ jQuery(function($){
           return false;
         }
         handler.addClass('working')
-        $.post(handler.attr('href'), {}, function(res){
-          
-          if (parseInt(res)){
+        $.ajax({
+          type: 'POST',
+          url: handler.attr('href'),
+          dataType: 'json'
+        }).then(function(res){
+          if (parseInt(res) || res.status === 0){
             // Swap href, text for data-href, data-text
             var text = handler.text();
             var href = handler.attr('href');

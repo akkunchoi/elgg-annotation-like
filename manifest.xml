@@ -6,5 +6,5 @@
         <field key="website" value="https://github.com/akkunchoi/elgg-annotation-like" />
         <field key="copyright" value="akkunchoi" />
         <field key="licence" value="GNU Public License version 2" />
-        <field key="elgg_version" value="2010030101" />
+        <field key="elgg_version" value="2014012000" />
 </plugin_manifest>
