@@ -1,9 +1,4 @@
 <?php
-/**
- * require taiyakan_core
- *  
- */
-
 require_once dirname(__FILE__) . '/lib/annotation_like.php';
 
 // Enable ajax request
