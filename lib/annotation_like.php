@@ -16,7 +16,7 @@ class AnnotationLike{
   public static $changed = false;
   /**
    * 
-   * @param int $annotationId target annotation id
+   * @param int $annotationId the target annotation id
    */
   public function __construct($annotationId){
     if (is_object($annotationId) && $annotationId instanceof ElggAnnotation){
@@ -51,25 +51,46 @@ class AnnotationLike{
   /**
    * 
    * 
-   * @param type $userid a user like the target annotation
+   * @param type $userid a user who like the target annotation
    * @return boolean 
    */
   public function like($userid){
+    if (is_object($userid)){
+      $userid = $userid->guid;
+    }
+    
     $entity = $this->annotation->getEntity();
+    
+    if ($this->liked($userid)){
+      return false;
+    }
+    
     self::$changed = true;
-    return $entity->annotate(self::KEY, $this->annotation->id, $this->annotation->access_id, $userid, 'integer');
+    $result = $entity->annotate(self::KEY, $this->annotation->id, $this->annotation->access_id, $userid, 'integer');
+    
+    if ($result){
+      trigger_plugin_hook('annotation_like:changed', 'all', array('entity' => $entity, 'annotation' => $this->annotation, 'method' => 'like'), null);
+    }
+    
+    return $result;
   }
   /**
    *
-   * @param type $userid a user cancel to like the target annotation
+   * @param type $userid a user who cancel to like the target annotation
    * @return boolean 
    */
   public function cancel($userid){
     if (is_object($userid)){
       $userid = $userid->guid;
     }
+    
     $entity = $this->annotation->getEntity();
-    $an = get_annotations2(array(
+    
+    if (!$this->liked($userid)){
+      return false;
+    }
+    
+    $an = annotation_like_get_annotations(array(
         'entity_guid' => $entity->guid, 
         'name' => self::KEY, 
         'value' => $this->annotation->id, 
@@ -81,6 +102,7 @@ class AnnotationLike{
       foreach ($an as $a){
         $a->delete();
       }
+      trigger_plugin_hook('annotation_like:changed', 'all', array('entity' => $entity, 'annotation' => $this->annotation, 'method' => 'cancel'), null);
       return true;
     }
     return false;
@@ -88,14 +110,14 @@ class AnnotationLike{
   /**
    *
    * @param type $user 
-   * @return boolean return true if a user already have liked
+   * @return boolean return true if a user already have liked the target comment.
    */
   public function liked($userid){
     if (is_object($userid)){
       $userid = $userid->guid;
     }
     $entity = $this->annotation->getEntity();
-    $an = get_annotations2(array(
+    $an = annotation_like_get_annotations(array(
         'entity_guid' => $entity->guid, 
         'name' => self::KEY, 
         'value' => $this->annotation->id, 
@@ -110,22 +132,47 @@ class AnnotationLike{
   }
   /**
    *
-   * @param type $aid an annotation id
    * @return int 
    */
   public function count(){
     $annotation = $this->annotation;
-    $an = get_annotations2(array(
+    
+    $an = annotation_like_get_annotations(array(
         'entity_guid' => $annotation->getEntity()->guid, 
         'name' => self::KEY, 
         'value' => $annotation->id, 
-        'value_type' => 'integer'
+        'value_type' => 'integer',
+        'limit' => 10000
     ));
     if ($an){
       return count($an);
     }else{
       return 0;
     }
+  }
+
+  /**
+   * You should call this method before you delete a target annotation.
+   * 
+   * @return int
+   */
+  public function delete(){
+    $annotation = $this->annotation;
+
+    $an = annotation_like_get_annotations(array(
+        'entity_guid' => $annotation->getEntity()->guid,
+        'name' => self::KEY,
+        'value' => $annotation->id,
+        'value_type' => 'integer',
+        'limit' => 10000
+    ));
+    $count = 0;
+    foreach ($an as $a){
+      if ($a->delete()){
+        $count++;
+      }
+    }
+    return $count;
   }
   /**
    * notification control
